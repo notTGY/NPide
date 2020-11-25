@@ -18,8 +18,8 @@ async function insertCode(token, code) {
   const cache = await collection.count({ token: token });
   console.log(cache);
   if (cache < 1) {
-    let timeFinish = (new Date()).getTime() + 1000*60;
-    return collection.insert({ token: token, code: code, time: timeFinish });
+    let timeStart = (new Date()).getTime();
+    return collection.insert({ token: token, code: code, time: timeStart });
   }
   console.log("updating code");
   return collection.update({ token: token }, { $set: { code: code } });
