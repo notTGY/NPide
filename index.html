@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>New powerful ide</title>
+  </head>
+  <body>
+
+  <textarea id="editorArea" autofocus>
+  </textarea>
+
+  <table>
+    <tbody  id="strNumbers">
+    </tbody>
+  </table>
+
+  </body>
+  <style>
+    body{
+      width:100%!important;
+      overflow: hidden;
+      height:100%!important;
+      margin: 0 auto;
+      padding:0;
+      background: #242429;
+      color: #FFF;
+    }
+    textarea {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      font: Arial;
+      font-size: 20px;
+      border: 1px hidden #FFF;
+      background: #242429;
+      color: #46b846;
+      outline: none;
+      resize: none;
+      border: none;
+      overflow: hidden;
+    }
+    textarea:focus {
+      outline: none;
+      resize: none;
+      border: none;
+      line-height: 25px;
+    }
+    textarea::selection {
+      background: #ccc;
+    }
+    td {
+      font: Arial;
+      font-size: 20px;
+      color: #46b84630;
+      margin: 0 auto;
+      padding: 0;
+    }
+    tr {
+      margin: 0 auto;
+      padding: 0;
+      height: 25px;
+    }
+    #strNumbers {
+      position: absolute;
+      top: 0px;
+      margin: 0 auto;
+      padding: 0;
+      left: 0px;
+    }
+  </style>
+  <script src="./index.js"></script>
+</html>
