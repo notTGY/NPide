@@ -1,30 +1,44 @@
-let token = generateToken();
+const TOKEN_LENGTH = 4;
 
-let strNumbersTable = document.getElementById('strNumbers');
+let token = '';
 
-for (let i = 1; i < 200; i++) {
-  strNumbersTable.innerHTML += `<tr><td>${i}</td></tr>`;
+let strNumbers = document.getElementById('strNumbers');
+
+strNumbers.value = '';
+
+for (let i = 1; i < 10000; i++) {
+  strNumbers.value += `${i}\n`;
 }
+
+document.body.onload = _=>console.log(new Date(),'body');
+
 
 
 let database;
 
 const tarea = document.getElementById("editorArea");
 
-tarea.style.marginLeft = strNumbersTable.style.width;
-
 async function init() {
   database = require("./backend.js");
-  tarea.value = await database.findCode(token);
 }
 init();
 
 tarea.style.width = window.visualViewport.width + "px";
 tarea.style.height = window.visualViewport.height + "px";
 
+strNumbers.style.height = window.visualViewport.height + "px";
+
+
+tarea.onscroll = e=>{
+  strNumbers.scrollTop = tarea.scrollTop;
+};
+
+
 window.addEventListener("resize", e => {
   tarea.style.width = window.visualViewport.width + "px";
   tarea.style.height = window.visualViewport.height + "px";
+
+  strNumbers.style.height = window.visualViewport.height + "px";
 });
 
 window.addEventListener("keydown", handleKeydown);
@@ -93,9 +107,9 @@ function handleKeyup(e) {
 function generateToken() {
   let tok = "";
   let rnd;
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < TOKEN_LENGTH; i++) {
     rnd = String.fromCharCode(
-      "a".charCodeAt(0) + Math.floor(Math.random() * 27)
+      "a".charCodeAt(0) + Math.floor(Math.random() * 10)
     );
     tok += rnd;
   }
@@ -124,6 +138,12 @@ function connectToDb() {
   inp.style.width = "70px";
   inp.type = "text";
   inp.style.margin = "0 auto";
+
+  if (token == '') {
+    token = generateToken();
+  }
+
+
   inp.placeholder = token;
   tarea.autofocus = false;
   inp.autofocus = true;
@@ -137,7 +157,7 @@ function connectToDb() {
 }
 
 function sessionIdInputHandler(inp, div) {
-  if ((inp.value.length == 6)) {
+  if ((inp.value.length == TOKEN_LENGTH)) {
     token = inp.value;
     (async _ => {
       tarea.value = await database.findCode(token);
