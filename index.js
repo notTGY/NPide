@@ -1,44 +1,72 @@
 const fs = require('fs');
+const path = require('path');
+const { splitInput } = require('./stringManipulation.js')
+
+const {startTerminal} = require('./terminalSupport.js')
 
 const TOKEN_LENGTH = 4;
 
 let token = '';
 
-let strNumbers = document.getElementById('strNumbers');
-
-strNumbers.value = '';
-
-const href = window.location.href;
-const path = unescape(href.substring(href.indexOf('?data=')+6));
-
-
-
-for (let i = 1; i < 10000; i++) {
-  strNumbers.value += `${i}\n`;
-}
-
-
-
-
-let database;
+const database = require("./backend.js");
 
 const tarea = document.getElementById("editorArea");
 
-let buffer;
+tarea.value = '';
+tarea.selectionStart = tarea.selectionEnd = 0;
 
+const href = window.location.href;
+const sourcePath = unescape(href.substring(href.indexOf('?data=')+6));
 
-async function init() {
-  database = require("./backend.js");
-  if (path != undefined) {
-    fs.readFile(path, 'utf-8', async (err, data) => {
-      if (err) {
-          throw err;
-      }
-      tarea.value = data;
-    });
+let filesOpened = [];
+let folderPath = '';
+let currentFilePath = '';
+
+let currentFullPath =(a,b)=>path.join([a,b]);
+
+(async function init() {
+  if (sourcePath != undefined) {
+    if(fs.lstatSync(sourcePath).isDirectory()){
+      //open dir and read some file
+      folderPath = sourcePath;
+      fs.readdir(sourcePath, 'utf8', (err,data)=>{
+        filesOpened = data;
+        if (data != [] && data != null && data != undefined) {
+          currentFilePath = data[0];
+          fs.readFile(data[0], 'utf-8', async (err, data) => {
+            if (err) {
+              throw err;
+            }
+            tarea.value = data;
+          });
+        }
+      });
+    } else {
+      //open dir and read given file
+      folderPath = path.dirname(sourcePath);
+      fs.readdir(folderPath, 'utf8', (err,data)=>{
+        filesOpened = data;
+      });
+      currentFilePath = sourcePath;
+      fs.readFile(sourcePath, 'utf-8', async (err, data) => {
+        if (err) {
+            throw err;
+        }
+        tarea.value = data;
+      });
+    }
   }
+})();
+
+
+let strNumbers = document.getElementById('strNumbers');
+
+let stringData = splitInput(tarea.value);
+
+strNumbers.value = '';
+for (let i = 1; i < stringData.length + 1; i++) {
+  strNumbers.value += `${i}\n`;
 }
-init();
 
 tarea.style.width = window.visualViewport.width-65 + "px";
 tarea.style.height = window.visualViewport.height + "px";
@@ -75,8 +103,28 @@ let isShift = 0;
 let safeValue = tarea.value;
 let isHelpMenu = 0;
 let isSessionDb = 0;
+let isTerminal = 0;
 
 function handleKeydown(e) {
+  let ss = tarea.selectionStart;
+  let se = tarea.selectionEnd;
+
+  if (ss != se || e.key == 'Delete' || e.key == 'Backspace') {
+    setTimeout(_=>{
+      stringData = splitInput(tarea.value);
+      strNumbers.value = '';
+      for (let i = 1; i < stringData.length + 1; i++) {
+        strNumbers.value += `${i}\n`;
+      }
+    }, 0);
+  }
+  if (ss == se && e.key == 'Enter') {
+    setTimeout(_=>{
+      stringData = splitInput(tarea.value);
+      strNumbers.value += stringData.length+'\n';
+    },0);
+  }
+
   if (e.key == "Control") {
     isCtrl = 1;
   }
@@ -114,8 +162,10 @@ function handleKeydown(e) {
       tarea.focus();
     }
   }
+  if (e.key == "t" && isCtrl) {
+    startTerminal();
+  }
   if (e.key == "Tab" && !isCtrl) {
-    let ss = tarea.selectionStart;
     tarea.value =
       tarea.value.substring(0, tarea.selectionStart) +
       "  " +
