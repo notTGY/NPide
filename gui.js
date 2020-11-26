@@ -43,6 +43,13 @@ function connectToDb() {
       token = inp.value;
       (async _ => {
         tarea.value = await database.findCode(token);
+        setTimeout(_=>{
+          stringData = splitInput(tarea.value);
+          strNumbers.value = '';
+          for (let i = 1; i < stringData.length + 1; i++) {
+            strNumbers.value += `${i}\n`;
+          }
+        }, 0);
       })();
       inp.remove();
       div.remove();
