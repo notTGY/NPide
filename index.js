@@ -1,6 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const { splitInput } = require('./stringManipulation.js')
+const {remote} = require('electron');
+const {dialog} = remote;
+const { splitInput } = require('./stringManipulation.js');
+
 
 const {startTerminal} = require('./terminalSupport.js')
 
@@ -16,7 +19,7 @@ tarea.value = '';
 tarea.selectionStart = tarea.selectionEnd = 0;
 
 const href = window.location.href;
-const sourcePath = unescape(href.substring(href.indexOf('?data=')+6));
+let sourcePath = unescape(href.substring(href.indexOf('?data=')+6));
 
 let filesOpened = [];
 let folderPath = '';
@@ -27,19 +30,10 @@ let currentFullPath =(a,b)=>path.join([a,b]);
 (async function init() {
   if (sourcePath != undefined) {
     if(fs.lstatSync(sourcePath).isDirectory()){
-      //open dir and read some file
+      //open dir
       folderPath = sourcePath;
       fs.readdir(sourcePath, 'utf8', (err,data)=>{
         filesOpened = data;
-        if (data != [] && data != null && data != undefined) {
-          currentFilePath = data[0];
-          fs.readFile(data[0], 'utf-8', async (err, data) => {
-            if (err) {
-              throw err;
-            }
-            tarea.value = data;
-          });
-        }
       });
     } else {
       //open dir and read given file
@@ -47,7 +41,7 @@ let currentFullPath =(a,b)=>path.join([a,b]);
       fs.readdir(folderPath, 'utf8', (err,data)=>{
         filesOpened = data;
       });
-      currentFilePath = sourcePath;
+      currentFilePath = path.basename(sourcePath);
       fs.readFile(sourcePath, 'utf-8', async (err, data) => {
         if (err) {
             throw err;
@@ -133,6 +127,30 @@ function handleKeydown(e) {
   }
   if (e.key == "Escape") {
     window.close();
+  }
+  if (e.key == "s" && isCtrl && folderPath != '' && currentFilePath != '') {
+    fs.writeFile(path.join(folderPath,currentFilePath), tarea.value,'utf8',e=>console.log(e));
+  }
+  if (e.key == "s" && isCtrl && (folderPath == '' || currentFilePath == '')) {
+    dialog.showSaveDialog({}).then(e=>{
+      fs.writeFile(e.filePath, tarea.value,'utf8',e=>console.log(e));
+    });
+  }
+  if (e.key == "o" && isCtrl) {
+    dialog.showOpenDialog({}).then(e=>{
+      sourcePath = e.filePaths[0];
+      folderPath = path.dirname(sourcePath);
+      fs.readdir(folderPath, 'utf8', (err,data)=>{
+        filesOpened = data;
+      });
+      currentFilePath = path.basename(sourcePath);
+      fs.readFile(sourcePath, 'utf-8', async (err, data) => {
+        if (err) {
+            throw err;
+        }
+        tarea.value = data;
+      });
+    });
   }
   if (e.key == "k" && isCtrl) {
     database.insertCode(token, tarea.value);

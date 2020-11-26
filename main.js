@@ -1,15 +1,19 @@
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow } = require('electron');
 const path = require('path');
+const icon = __dirname + '\\favicon.ico';
 
+//if (require('electron-squirrel-startup')) return;
 
 function createWindow () {
   const mainWindow = new BrowserWindow({
     width: 1024,
     height: 768,
-    icon: __dirname + '/favicon.ico',
+    icon: icon,
     textAreasAreResizable: false,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
     }
   })
   mainWindow.setMenuBarVisibility(false);
@@ -18,6 +22,8 @@ function createWindow () {
 
   mainWindow.loadFile('index.html', {query: {"data": data}})
 }
+
+
 
 app.whenReady().then(() => {
   createWindow()
