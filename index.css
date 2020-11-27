@@ -20,31 +20,6 @@ body{
   align-items: center;
   justify-content: center;
 }
-#editorArea {
-  position: absolute;
-  top: 0px;
-  left: 65px;
-  font-family: Verdana,Geneva,sans-serif;
-  font-size: 20px;
-  border: none;
-  background: #242429;
-  color: #46b846;
-  outline: none;
-  line-height: 25px;
-  resize: none;
-  overflow: hidden;
-  border-left: 1px solid #2d692d;
-}
-#editorArea:focus {
-  outline: none;
-  resize: none;
-  border: none;
-  line-height: 25px;
-  border-left: 1px solid #2d692d;
-}
-#editorArea::selection {
-  background: #ccc;
-}
 #strNumbers {
   position: absolute;
   top: 0px;

@@ -2,8 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const {remote} = require('electron');
 const {dialog} = remote;
-const { splitInput } = require('./stringManipulation.js');
-
 
 const {startTerminal} = require('./terminalSupport.js')
 
@@ -13,10 +11,10 @@ let token = '';
 
 const database = require("./backend.js");
 
-const tarea = document.getElementById("editorArea");
+const {myCodeMirror, setMode} = require('./codemirror-plugin.js');
+const tarea = myCodeMirror;
 
-tarea.value = '';
-tarea.selectionStart = tarea.selectionEnd = 0;
+tarea.setValue("");
 
 const href = window.location.href;
 let sourcePath = unescape(href.substring(href.indexOf('?data=')+6));
@@ -46,107 +44,66 @@ let currentFullPath =(a,b)=>path.join([a,b]);
         if (err) {
             throw err;
         }
-        tarea.value = data;
+        tarea.setValue(data);
       });
     }
   }
 })();
 
+let domObj = document.querySelectorAll('.CodeMirror')[0];
+let style = domObj.style;
 
-let strNumbers = document.getElementById('strNumbers');
-
-let stringData = splitInput(tarea.value);
-
-strNumbers.value = '';
-for (let i = 1; i < stringData.length + 1; i++) {
-  strNumbers.value += `${i}\n`;
-}
-
-tarea.style.width = window.visualViewport.width-65 + "px";
-tarea.style.height = window.visualViewport.height + "px";
-
-strNumbers.style.height = window.visualViewport.height + "px";
-
+style.position = 'absolute';
+style.left = '65px';
+style.width = window.visualViewport.width-65 + "px";
+style.height = window.visualViewport.height + "px";
 
 window.addEventListener('wheel', e=>{
-  tarea.scrollTop += e.deltaY/5;
-  if (tarea.scrollTop < 0) {
-    tarea.scrollTop = 0;
+  domObj.scrollTop += e.deltaY/5;
+  if (domObj.scrollTop < 0) {
+    domObj.scrollTop = 0;
   }
-  strNumbers.scrollTop = tarea.scrollTop;
 });
 
-
-tarea.onscroll = e=>{
-  strNumbers.scrollTop = tarea.scrollTop;
-  tarea.scrollLeft = 0;
+domObj.onscroll = e=>{
+  domObj.scrollLeft = 0;
 };
 
-
 window.addEventListener("resize", e => {
-  tarea.style.width = window.visualViewport.width-65 + "px";
-  tarea.style.height = window.visualViewport.height + "px";
-
-  strNumbers.style.height = window.visualViewport.height + "px";
+  style.width = window.visualViewport.width-65 + "px";
+  style.height = window.visualViewport.height + "px";
 });
+
 
 window.addEventListener("keydown", handleKeydown);
 window.addEventListener("keyup", handleKeyup);
 let isCtrl = 0;
+let isAlt = 0;
 let isShift = 0;
-let safeValue = tarea.value;
 let isHelpMenu = 0;
+let isLanguageMenu = 0;
 let isSessionDb = 0;
 let isTerminal = 0;
 
 function handleKeydown(e) {
-  let ss = tarea.selectionStart;
-  let se = tarea.selectionEnd;
-
-  if (isCtrl) {
-    setTimeout(_=>{
-      stringData = splitInput(tarea.value);
-      strNumbers.value = '';
-      for (let i = 1; i < stringData.length + 1; i++) {
-        strNumbers.value += `${i}\n`;
-      }
-    }, 0);
-  }
-
-  if (ss != se || e.key == 'Delete' || e.key == 'Backspace') {
-    setTimeout(_=>{
-      stringData = splitInput(tarea.value);
-      strNumbers.value = '';
-      for (let i = 1; i < stringData.length + 1; i++) {
-        strNumbers.value += `${i}\n`;
-      }
-    }, 0);
-  }
-  if (ss == se && e.key == 'Enter') {
-    setTimeout(_=>{
-      stringData = splitInput(tarea.value);
-      strNumbers.value += stringData.length+'\n';
-    },0);
-  }
-
   if (e.key == "Control") {
     isCtrl = 1;
-  }
-  if (e.key == "Shift") {
+  } else if (e.key == "Shift") {
     isShift = 1;
-  }
-  if (e.key == "Escape") {
+  } else if (e.key == "Alt") {
+    isAlt = 1;
+  } else if (e.key == "Escape") {
     window.close();
-  }
-  if (e.key == "s" && isCtrl && folderPath != '' && currentFilePath != '') {
-    fs.writeFile(path.join(folderPath,currentFilePath), tarea.value,'utf8',e=>console.log(e));
-  }
-  if (e.key == "s" && isCtrl && (folderPath == '' || currentFilePath == '')) {
+  } else if (e.key == "s" && isCtrl && folderPath != '' && currentFilePath != '') {
+    isCtrl = 0;
+    fs.writeFile(path.join(folderPath,currentFilePath), tarea.getValue(),'utf8',e=>console.log(e));
+  } else if (e.key == "s" && isCtrl && (folderPath == '' || currentFilePath == '')) {
+    isCtrl = 0;
     dialog.showSaveDialog({}).then(e=>{
-      fs.writeFile(e.filePath, tarea.value,'utf8',e=>console.log(e));
+      fs.writeFile(e.filePath, tarea.getValue(),'utf8',e=>console.log(e));
     });
-  }
-  if (e.key == "o" && isCtrl) {
+  } else if (e.key == "o" && isCtrl) {
+    isCtrl = 0;
     dialog.showOpenDialog({}).then(e=>{
       sourcePath = e.filePaths[0];
       folderPath = path.dirname(sourcePath);
@@ -158,21 +115,15 @@ function handleKeydown(e) {
         if (err) {
             throw err;
         }
-        tarea.value = data;
-        setTimeout(_=>{
-          stringData = splitInput(tarea.value);
-          strNumbers.value = '';
-          for (let i = 1; i < stringData.length + 1; i++) {
-            strNumbers.value += `${i}\n`;
-          }
-        }, 0);
+        tarea.setValue(data);
       });
     });
-  }
-  if (e.key == "k" && isCtrl) {
-    database.insertCode(token, tarea.value);
-  }
-  if (e.key == "d" && isCtrl) {
+  } else if (e.key == "k" && isCtrl) {
+    isCtrl = 0;
+    database.insertCode(token, tarea.getValue());
+  } else if (e.key == "d" && isCtrl && isAlt) {
+    isAlt = 0;
+    isCtrl = 0;
     if (!isSessionDb) {
       connectToDb();
     } else {
@@ -184,8 +135,9 @@ function handleKeydown(e) {
       tarea.autofocus = true;
       tarea.focus();
     }
-  }
-  if (e.key == "h" && isCtrl) {
+  } else if (e.key == "h" && isCtrl && isAlt) {
+    isAlt = 0;
+    isCtrl = 0;
     if (!isHelpMenu) {
       startHelpMenu();
     } else {
@@ -196,26 +148,30 @@ function handleKeydown(e) {
       isHelpMenu = 0;
       tarea.focus();
     }
-  }
-  if (e.key == "t" && isCtrl) {
+  } else if (e.key == "l" && isCtrl && isAlt) {
+    isAlt = 0;
+    isCtrl = 0;
+    if (!isLanguageMenu) {
+      startLanguageMenu();
+    } else {
+      let div = document.getElementById('language_div_id');
+      div.remove();
+      isLanguageMenu = 0;
+      tarea.focus();
+    }
+  } else if (e.key == "t" && isCtrl) {
+    isCtrl = 0;
     startTerminal();
-  }
-  if (e.key == "Tab" && !isCtrl) {
-    tarea.value =
-      tarea.value.substring(0, tarea.selectionStart) +
-      "  " +
-      tarea.value.substring(tarea.selectionStart);
-    tarea.selectionStart = ss + 2;
-    tarea.selectionEnd = ss + 2;
   }
 }
 
 function handleKeyup(e) {
   if (e.key == "Control") {
     isCtrl = 0;
-  }
-  if (e.key == "Shift") {
+  } else if (e.key == "Shift") {
     isShift = 0;
+  } else if (e.key == "Alt") {
+    isAlt = 0;
   }
 }
 
