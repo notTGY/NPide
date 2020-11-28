@@ -1,7 +1,7 @@
 /* Based on Sublime Text's Monokai theme */
 
 .cm-s-monokai.CodeMirror {
-  background: #242429;
+  background: linear-gradient(#292429, #242435);
   color: #66b866;
   font-size: 20px;
   font-family: Verdana,Geneva,sans-serif;
@@ -9,14 +9,16 @@
 
 .cm-s-monokai div.CodeMirror-selected {
   background: #555;
+  border-radius: 5px;
 }
 
 .cm-s-monokai .CodeMirror-line::selection, .cm-s-monokai .CodeMirror-line > span::selection, .cm-s-monokai .CodeMirror-line > span > span::selection {
   background: #555;
+  border-radius: 5px;
 }
 
 .cm-s-monokai .CodeMirror-gutters {
-  background: #242429;
+  background: linear-gradient(#292429, #242435);
   border-right: 1px solid #2d692d;
 }
 
@@ -69,7 +71,7 @@
 }
 
 .cm-s-monokai span.cm-keyword {
-  color: #a94572;
+  color: #fc0;
 }
 
 .cm-s-monokai span.cm-builtin {
@@ -77,7 +79,7 @@
 }
 
 .cm-s-monokai span.cm-string {
-  color: #e6db74;
+  color: #a0f;
 }
 
 .cm-s-monokai span.cm-variable {
@@ -93,7 +95,11 @@
 }
 
 .cm-s-monokai span.cm-def {
-  color: #0F0;
+  color: #0f0d;
+}
+
+.cm-s-monokai span.cm-operator {
+  color: #f68;
 }
 
 .cm-s-monokai span.cm-bracket {

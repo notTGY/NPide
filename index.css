@@ -5,8 +5,12 @@ body{
   margin: 0 auto;
   padding:0;
   font-family: Verdana,Geneva,sans-serif;
-  background: #242429;
+  background: linear-gradient(#292429, #242435);
   color: #FFF;
+}
+#mainAreaWrapper {
+  display: flex;
+  flex-direction: row;
 }
 #loading_div {
   position: fixed;
@@ -20,21 +24,45 @@ body{
   align-items: center;
   justify-content: center;
 }
-#strNumbers {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 60px;
+#treeView {
   font-family: Verdana,Geneva,sans-serif;
-  font-size: 20px;
+  font-size: 12px;
   border: 1px hidden #FFF;
-  background: #242429;
+  background: linear-gradient(#292429, #242435);
   color: #46b846;
   outline: none;
   line-height: 25px;
   resize: none;
   border: none;
   overflow: hidden;
+}
+.nodeElement {
+  border-bottom: 1px solid #444;
+  border-right: 1px solid #444;
+  text-align: left;
+  padding: 2px;
+  padding-left: 10px; 
+}
+.nodeElement-focus {
+  background: #243439;
+}
+#bluringTA {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  color: #0000;
+  background: #0000;
+  outline: none;
+  line-height: 25px;
+  resize: none;
+  border: none;
+  overflow: hidden;
+}
+.nodeElement:hover {
+  background: #243439;
+}
+.nodeElement::selection {
+  background: #0000;
 }
 .lds-roller {
   display: inline-block;

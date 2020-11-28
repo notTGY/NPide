@@ -16,6 +16,7 @@ function connectToDb() {
     div.style.justifyContent = "center";
     div.style.border = "1px solid #FFF";
     div.style.borderRadius = "50px";
+    div.style.zIndex = 349482904;
 
     inp.style.width = "70px";
     inp.type = "text";

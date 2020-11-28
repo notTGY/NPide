@@ -9,6 +9,163 @@ const TOKEN_LENGTH = 4;
 
 let token = '';
 
+
+let mainTreeNode = document.getElementById('treeView');
+
+let nodes = [];
+
+
+function showFiles (arr, openList) {
+  if (openList == undefined) {
+    openList = []
+  }
+  nodes.forEach(e => e.elem.remove());
+
+  nodes = [];
+
+
+  arr.forEach((e, i) => {
+    nodes[i] = { uniqueValue: e };
+    nodes[i].elem = document.createElement('div');
+    nodes[i].elem.classList.add('nodeElement');
+    nodes[i].elem.innerHTML = path.basename(e);
+    nodes[i].dependency =  path.dirname(e);
+    nodes[i].open = 0;
+    if (openList.length > 0) {
+      openList.forEach(item => {
+        if (item == e) {
+          nodes[i].open = 1;
+        }
+      });
+    }
+    mainTreeNode.appendChild(nodes[i].elem);
+  });
+
+  if (nodeFocusNumber != undefined) {
+    nodes[nodeFocusNumber].elem.classList.add('nodeElement-focus');
+  }
+
+  nodes.forEach((item, i) => {
+    item.elem.onclick = ((e,item) => {
+      if (!fs.lstatSync(item.uniqueValue).isDirectory()) {
+        fs.readFile(item.uniqueValue, 'utf-8', async (err, data) => {
+          if (err) {
+              throw err;
+            }
+            tarea.setValue(data);
+            currentFilePath = item.uniqueValue;
+          });
+        } else {
+          toggleDir(item.uniqueValue);
+        }
+    }).bind(null, null, item);
+  });
+}
+
+function focusFile (fname) {
+  let found = 0;
+  nodes.forEach((e,i) => {
+    if (e.uniqueValue == fname) {
+      e.elem.classList.add('nodeElement-focus');
+      nodeFocusNumber = i;
+      found = 1;
+    }
+  });
+  if (!found) {
+    nodes[0].elem.classList.add('nodeElement-focus');
+    nodeFocusNumber = 0;
+    found = 1;
+  }
+}
+
+function showNext() {
+  if (nodeFocusNumber < nodes.length - 1) {
+    removeFocus();
+    nodeFocusNumber++;
+    nodes[nodeFocusNumber].elem.classList.add('nodeElement-focus');
+  }
+}
+
+function showPrevious() {
+  if (nodeFocusNumber > 0) {
+    removeFocus();
+    nodeFocusNumber--;
+    nodes[nodeFocusNumber].elem.classList.add('nodeElement-focus');
+  }
+}
+
+function toggleDir(dirname) {
+  let index = 0;
+  nodes.forEach((e, i) => {if(e.uniqueValue == dirname) index = i});
+
+  if (!nodes[index].open) {
+    nodes[index].open = 1;
+    let openList = [];
+    nodes.forEach((item, i) => {
+      if (item.open) {
+        openList[openList.length] = item.uniqueValue;
+      }
+    });
+
+    fs.readdir(dirname, 'utf8', (err,data)=>{
+      let tmp = [];
+      for (let i = 0; i < index + 1; i++) {
+        tmp[i] = nodes[i].uniqueValue;
+      }
+      for (let i = index + 1; i < index + 1 + data.length; i++) {
+        tmp[i] = path.join(dirname, data[i - index - 1]);
+      }
+      for (let i = index + 1 + data.length; i < nodes.length + data.length; i++) {
+        tmp[i] = nodes[i - data.length].uniqueValue;
+      }
+      showFiles(tmp, openList);
+    });
+  } else {
+    nodes[index].open = 0;
+    let openList = [];
+    nodes.forEach((item, i) => {
+      if (item.open) {
+        openList[openList.length] = item.uniqueValue;
+      }
+    });
+
+    fs.readdir(dirname, 'utf8', (err,data)=>{
+      let tmp = [];
+      for (let i = 0; i <= index; i++) {
+        tmp[i] = nodes[i].uniqueValue;
+      }
+      let ind = index + 1;
+      let sum = data.length;
+      let totalsum = sum;
+      while (sum > 0) {
+        if (nodes[ind].open) {
+          let x = fs.readdirSync(nodes[ind].uniqueValue, 'utf8').length;
+          sum += x;
+          totalsum += x;
+        }
+        sum--;
+        ind++;
+      }
+
+
+      for (let i = ind; i < nodes.length; i++) {
+        tmp[i - totalsum] = nodes[i].uniqueValue;
+      }
+
+      showFiles(tmp, openList);
+    });
+  }
+}
+
+
+function removeFocus() {
+  nodes[nodeFocusNumber].elem.classList.remove('nodeElement-focus');
+}
+let isNodesFocused = 0;
+let nodeFocusNumber = undefined;
+
+
+
 const database = require("./backend.js");
 
 const {myCodeMirror, setMode} = require('./codemirror-plugin.js');
@@ -32,14 +189,19 @@ let currentFullPath =(a,b)=>path.join([a,b]);
       folderPath = sourcePath;
       fs.readdir(sourcePath, 'utf8', (err,data)=>{
         filesOpened = data;
+        data = data.map(e=>path.join(folderPath,e));
+        showFiles(data);
       });
     } else {
       //open dir and read given file
       folderPath = path.dirname(sourcePath);
       fs.readdir(folderPath, 'utf8', (err,data)=>{
         filesOpened = data;
+        data = data.map(e=>path.join(folderPath,e));
+        showFiles(data);
       });
       currentFilePath = path.basename(sourcePath);
+      focusFile(currentFilePath);
       fs.readFile(sourcePath, 'utf-8', async (err, data) => {
         if (err) {
             throw err;
@@ -50,11 +212,18 @@ let currentFullPath =(a,b)=>path.join([a,b]);
   }
 })();
 
+let bluringTA = document.getElementById('bluringTA');
+
+
+
 let domObj = document.querySelectorAll('.CodeMirror')[0];
 let style = domObj.style;
-
+/*
 style.position = 'absolute';
 style.left = '65px';
+*/
+style.position = 'static';
+
 style.width = window.visualViewport.width-65 + "px";
 style.height = window.visualViewport.height + "px";
 
@@ -106,6 +275,17 @@ function handleKeydown(e) {
     isCtrl = 0;
     dialog.showOpenDialog({}).then(e=>{
       sourcePath = e.filePaths[0];
+      if (e.filePaths.length > 1) {
+        e.filePaths = e.filePaths.map(a=>path.join(e.filePath[0],a));
+        showFiles(e.filePaths);
+      } else {
+        folderPath = path.dirname(sourcePath);
+        fs.readdir(folderPath, 'utf8', (err,data)=>{
+          filesOpened = data;
+          data = data.map(e=>path.join(folderPath, e))
+          showFiles(data);
+        });
+      }
       folderPath = path.dirname(sourcePath);
       fs.readdir(folderPath, 'utf8', (err,data)=>{
         filesOpened = data;
@@ -121,6 +301,20 @@ function handleKeydown(e) {
   } else if (e.key == "k" && isCtrl) {
     isCtrl = 0;
     database.insertCode(token, tarea.getValue());
+  } else if (e.key == "g" && isCtrl) {
+    isCtrl = 0;
+    if (!isNodesFocused) {
+      focusFile(currentFilePath);
+      bluringTA.focus();
+      isNodesFocused = 1;
+      tarea.autofocus = false;
+    } else {
+      removeFocus();
+      nodeFocusNumber = undefined;
+      tarea.autofocus = true;
+      tarea.focus();
+      isNodesFocused = 0;
+    }
   } else if (e.key == "d" && isCtrl && isAlt) {
     isAlt = 0;
     isCtrl = 0;
@@ -163,6 +357,26 @@ function handleKeydown(e) {
     isCtrl = 0;
     startTerminal();
   }
+
+  if (isNodesFocused) {
+    if (e.key == 'ArrowUp') {
+      showPrevious();
+    } else if (e.key == 'ArrowDown') {
+      showNext();
+    } else if (e.key == 'Enter') {
+      if (!fs.lstatSync(nodes[nodeFocusNumber].uniqueValue).isDirectory()) {
+        fs.readFile(nodes[nodeFocusNumber].uniqueValue, 'utf-8', async (err, data) => {
+          if (err) {
+              throw err;
+          }
+          tarea.setValue(data);
+        });
+      } else {
+        toggleDir(nodes[nodeFocusNumber].uniqueValue);
+      }
+    }
+  }
+
 }
 
 function handleKeyup(e) {
