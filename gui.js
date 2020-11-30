@@ -42,9 +42,32 @@ function connectToDb() {
   function sessionIdInputHandler(inp, div) {
     if ((inp.value.length == TOKEN_LENGTH)) {
       token = inp.value;
-      (async _ => {
+      iWasEditing = 0;
+      let firstTime = 1;
+      let interval = setInterval(async _ => {
+        let ss = tarea.getCursor();
+        if (iWasEditing && !firstTime) {
+          console.log('sending data');
+          await database.insertCode(token, tarea.getValue());
+        }
+        if (firstTime) {
+          firstTime = 0;
+        }
+        iWasEditing = 0;
+        console.log('getting value');
         tarea.setValue(await database.findCode(token));
-      })();
+        tarea.setCursor(ss);
+        if (token == '') {
+          clearInterval(interval);
+        }
+      }, 5000);
+      inp.remove();
+      div.remove();
+      isSessionDb = 0;
+      tarea.autofocus = true;
+      tarea.focus();
+    } else {
+      token = '';
       inp.remove();
       div.remove();
       isSessionDb = 0;

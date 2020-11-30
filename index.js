@@ -253,8 +253,21 @@ let isHelpMenu = 0;
 let isLanguageMenu = 0;
 let isSessionDb = 0;
 let isTerminal = 0;
+let iWasEditing = 0;
 
 function handleKeydown(e) {
+  if (e.key != "Control" && e.key != "Alt" && e.key != "Escape" && e.key != "ArrowUp" && e.key != "ArrowDown") {
+    if (e.key != "ArrowRight" && e.key != "ArrowLeft" && e.key != "CapsLock" && e.key != "PageDown" && e.key != "PageUp") {
+      if (e.key != "End" && e.key != "Home" && e.key != "Insert" && e.key != "NumLock" && e.key != "Meta" && e.key != "PrintScreen") {
+        if (e.key != "F1" && e.key != "F2" && e.key != "F3" && e.key != "F4" && e.key != "F5" && e.key != "F6" && e.key != "F6") {
+          if (e.key != "F7" && e.key != "F8" && e.key != "F9" && e.key != "F10" && e.key != "F11" && e.key != "F12") {
+            iWasEditing = 1;
+          }
+        }
+      }
+    }
+  }
+
   if (e.key == "Control") {
     isCtrl = 1;
   } else if (e.key == "Shift") {
@@ -298,9 +311,6 @@ function handleKeydown(e) {
         tarea.setValue(data);
       });
     });
-  } else if (e.key == "k" && isCtrl) {
-    isCtrl = 0;
-    database.insertCode(token, tarea.getValue());
   } else if (e.key == "g" && isCtrl) {
     isCtrl = 0;
     if (!isNodesFocused) {

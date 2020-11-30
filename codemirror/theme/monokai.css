@@ -8,12 +8,12 @@
 }
 
 .cm-s-monokai div.CodeMirror-selected {
-  background: #555;
+  background: linear-gradient(to right, #f54, #45f);
   border-radius: 5px;
 }
 
 .cm-s-monokai .CodeMirror-line::selection, .cm-s-monokai .CodeMirror-line > span::selection, .cm-s-monokai .CodeMirror-line > span > span::selection {
-  background: #555;
+  background: linear-gradient(to right, #f54, #45f);
   border-radius: 5px;
 }
 
