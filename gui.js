@@ -89,7 +89,18 @@ function connectToDb() {
     div.style.zIndex = 342523525;
 
 
-    div.innerHTML = 'help page';
+    div.innerHTML = '<h1>HELP PAGE</h1>';
+    let wrapper = document.createElement('div');
+    wrapper.innerHTML = 'Use Ctrl + Alt + H to show or leave this menu <br><br>';
+    wrapper.innerHTML += 'Use Ctrl + Alt + L to select programming language <br><br>';
+    wrapper.innerHTML += 'Use Ctrl + Alt + D to connect to sync programming session <br><br>';
+    wrapper.innerHTML += 'Use Ctrl + S to save file you are editing <br><br>';
+    wrapper.innerHTML += 'Use Ctrl + O to open new file <br><br>';
+    wrapper.innerHTML += 'Use Ctrl + G to jump to file tree <br> and use arrows up and down and enter to go around there, open and close directories and open files <br><br>';
+    wrapper.innerHTML += 'Use Ctrl + Atl + T to open terminal <br><br>';
+    wrapper.innerHTML += 'All other commands and shortcuts are inhereted from  <br>';
+    wrapper.innerHTML += '<a href="https://www.sublimetext.com/">Sublime Text</a>';
+    div.appendChild(wrapper);
 
     let but = document.createElement('button');
     but.onclick = closeHelpMenu.bind(null, div, but);
@@ -294,4 +305,20 @@ function connectToDb() {
       setMode(name);
       isLanguageMenu = 0;
     };
+  }
+
+
+  function changeLineStyle (isGreen) {
+    const elems1 = document.getElementsByClassName('CodeMirror-gutters');
+    const elems2 = document.getElementsByClassName('cm-s-monokai');
+    const elems = [... elems1, ...elems2];
+    if (isGreen) {
+      elems.forEach((item, i) => {
+        item.style.borderRight = '1px solid #2d692d';
+      });
+    } else {
+      elems.forEach((item, i) => {
+        item.style.borderRight = '1px solid #69692d';
+      });
+    }
   }

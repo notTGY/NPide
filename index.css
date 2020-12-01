@@ -35,13 +35,17 @@ body{
   resize: none;
   border: none;
   overflow: hidden;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+
 }
 .nodeElement {
   border-bottom: 1px solid #444;
   border-right: 1px solid #444;
   text-align: left;
   padding: 2px;
-  padding-left: 10px; 
+  padding-left: 10px;
 }
 .nodeElement-focus {
   background: #243439;
@@ -147,4 +151,8 @@ body{
   100% {
     transform: rotate(360deg);
   }
+}
+
+a {
+  color: white;
 }
