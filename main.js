@@ -20,7 +20,7 @@ function createWindow () {
 
   data = process.argv[1];
 
-  mainWindow.loadFile('index.html', {query: {"data": data}})
+  mainWindow.loadFile('index.html', {query: {"data": escape(data)}})
 }
 
 

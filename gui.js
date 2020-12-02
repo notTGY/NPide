@@ -91,13 +91,16 @@ function connectToDb() {
 
     div.innerHTML = '<h1>HELP PAGE</h1>';
     let wrapper = document.createElement('div');
-    wrapper.innerHTML = 'Use Ctrl + Alt + H to show or leave this menu <br><br>';
-    wrapper.innerHTML += 'Use Ctrl + Alt + L to select programming language <br><br>';
-    wrapper.innerHTML += 'Use Ctrl + Alt + D to connect to sync programming session <br><br>';
-    wrapper.innerHTML += 'Use Ctrl + S to save file you are editing <br><br>';
-    wrapper.innerHTML += 'Use Ctrl + O to open new file <br><br>';
-    wrapper.innerHTML += 'Use Ctrl + G to jump to file tree <br> and use arrows up and down and enter to go around there, open and close directories and open files <br><br>';
-    wrapper.innerHTML += 'Use Ctrl + Atl + T to open terminal <br><br>';
+    wrapper.style.paddingLeft='10px';
+    wrapper.innerHTML = '- Ctrl + Alt + H to show or leave this menu <br><br>';
+    wrapper.innerHTML += '- Ctrl + Alt + L to select programming language <br><br>';
+    wrapper.innerHTML += '- Ctrl + Alt + D to connect to sync programming session <br><br>';
+    wrapper.innerHTML += '- Ctrl + S to save file you are editing <br><br>';
+    wrapper.innerHTML += '- Ctrl + O to open new file <br><br>';
+    wrapper.innerHTML += '- Ctrl + G to jump to file tree <br> and use arrows up and down and enter to go around there,<br> open and close directories and open files <br><br>';
+    wrapper.innerHTML += '- Ctrl + Atl + T to open terminal <br><br>';
+    wrapper.innerHTML += '- Ctrl + 2 to switch to second split screen <br><br>';
+    wrapper.innerHTML += '- Ctrl + 1 to close second split screen <br><br>';
     wrapper.innerHTML += 'All other commands and shortcuts are inhereted from  <br>';
     wrapper.innerHTML += '<a href="https://www.sublimetext.com/">Sublime Text</a>';
     div.appendChild(wrapper);
@@ -305,20 +308,4 @@ function connectToDb() {
       setMode(name);
       isLanguageMenu = 0;
     };
-  }
-
-
-  function changeLineStyle (isGreen) {
-    const elems1 = document.getElementsByClassName('CodeMirror-gutters');
-    const elems2 = document.getElementsByClassName('cm-s-monokai');
-    const elems = [... elems1, ...elems2];
-    if (isGreen) {
-      elems.forEach((item, i) => {
-        item.style.borderRight = '1px solid #2d692d';
-      });
-    } else {
-      elems.forEach((item, i) => {
-        item.style.borderRight = '1px solid #69692d';
-      });
-    }
   }

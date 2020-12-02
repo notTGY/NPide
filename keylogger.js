@@ -19,18 +19,29 @@ function handleKeydown(e) {
     isShift = 1;
   } else if (e.key == "Alt") {
     isAlt = 1;
-  } else if (e.key == "s" && isCtrl && folderPath != '' && currentFilePath != '') {
+  } else if (e.key == "s" && isCtrl) {
     isCtrl = 0;
-    isProgressSaved = 1;
-    changeLineStyle(isProgressSaved);
-    fs.writeFile(path.join(folderPath,currentFilePath), tarea.getValue(),'utf8',e=>console.log(e));
-  } else if (e.key == "s" && isCtrl && (folderPath == '' || currentFilePath == '')) {
+    saveCurrentFile();
+  } else if (e.key == 'n' && isCtrl) {
+    saveCurrentFile();
     isCtrl = 0;
-    isProgressSaved = 1;
-    changeLineStyle(isProgressSaved);
-    dialog.showSaveDialog({}).then(e=>{
-      fs.writeFile(e.filePath, tarea.getValue(),'utf8',e=>console.log(e));
-    });
+    add_new_file();
+  } else if (e.key == '2' && isCtrl) {
+    isCtrl = 0;
+    saveCurrentFile();
+    if (styleSecond.opacity == 0) {
+      styleSecond.opacity = 1;
+      setTimeout(_=>{onresize();}, 0);
+      areBothShown = 1;
+    }
+    currentTarea = 2;
+    hotSwap();
+  } else if (e.key == '1' && isCtrl) {
+    isCtrl = 0;
+    currentTarea = 1;
+    setTimeout(_=>{onresize();}, 0);
+    areBothShown = 0;
+    styleSecond.opacity = 0;
   } else if (e.key == "o" && isCtrl) {
     isCtrl = 0;
     dialog.showOpenDialog({}).then(e=>{
@@ -38,12 +49,14 @@ function handleKeydown(e) {
       if (e.filePaths.length > 1) {
         e.filePaths = e.filePaths.map(a=>({val:path.join(e.filePath[0],a), depth:0}));
         showFiles(e.filePaths);
+        onresize();
       } else {
         folderPath = path.dirname(sourcePath);
         fs.readdir(folderPath, 'utf8', (err,data)=>{
           filesOpened = data;
           data = data.map(e=>({val:path.join(folderPath, e), depth:0}));
           showFiles(data);
+          onresize();
         });
       }
       folderPath = path.dirname(sourcePath);
@@ -112,7 +125,7 @@ function handleKeydown(e) {
     }
   } else if (e.key == "t" && isCtrl) {
     isCtrl = 0;
-    startTerminal();
+    startTerminal(term);
   }
 
   if (isNodesFocused) {
@@ -128,7 +141,9 @@ function handleKeydown(e) {
         mainTreeNode.scrollTop += elem.offsetHeight + 2;
       }
     } else if (e.key == 'Enter') {
+      saveCurrentFile();
       if (!fs.lstatSync(nodes[nodeFocusNumber].uniqueValue).isDirectory()) {
+        sourcePath = nodes[nodeFocusNumber].uniqueValue;
         fs.readFile(nodes[nodeFocusNumber].uniqueValue, 'utf-8', async (err, data) => {
           if (err) {
               throw err;

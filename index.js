@@ -3,75 +3,57 @@ const path = require('path');
 const {remote} = require('electron');
 const {dialog} = remote;
 
-const {startTerminal} = require('./terminalSupport.js')
+let term = document.getElementById('terminal');
+const {startTerminal} = require('./terminalSupport.js');
+term.style.opacity = 0;
+term.value = '';
 
 const TOKEN_LENGTH = 4;
-
 let token = '';
-
-
-
-
 const database = require("./backend.js");
 
-const {myCodeMirror, setMode} = require('./codemirror-plugin.js');
+const {myCodeMirror, setMode, mySecondCodeMirror, setModeSecond} = require('./codemirror-plugin.js');
 const tarea = myCodeMirror;
+const secondTarea = mySecondCodeMirror;
+
+let currentTarea = 1;
+let areBothShown = 0;
 
 tarea.setValue("");
+secondTarea.setValue("");
 
 const href = window.location.href;
-let sourcePath = unescape(href.substring(href.indexOf('?data=')+6));
-
+sourcePath = unescape(unescape(href.substring(href.indexOf('?data=')+6)));
 let filesOpened = [];
 let folderPath = '';
 let currentFilePath = '';
-
 let currentFullPath =(a,b)=>path.join([a,b]);
-
-(async function init() {
-  if (sourcePath != undefined) {
-    if(fs.lstatSync(sourcePath).isDirectory()){
-      //open dir
-      folderPath = sourcePath;
-      fs.readdir(sourcePath, 'utf8', (err,data)=>{
-        filesOpened = data;
-        data = data.map(e=>({val:path.join(folderPath,e), depth:0}));
-        showFiles(data);
-      });
-    } else {
-      //open dir and read given file
-      folderPath = path.dirname(sourcePath);
-      fs.readdir(folderPath, 'utf8', (err,data)=>{
-        filesOpened = data;
-        data = data.map(e=>({val:path.join(folderPath,e), depth:0}));
-        showFiles(data);
-      });
-      currentFilePath = path.basename(sourcePath);
-      focusFile(currentFilePath);
-      fs.readFile(sourcePath, 'utf-8', async (err, data) => {
-        if (err) {
-            throw err;
-        }
-        tarea.setValue(data);
-      });
-    }
-  }
-})();
+init_fs();
 
 let bluringTA = document.getElementById('bluringTA');
 
-
-
 let domObj = document.querySelectorAll('.CodeMirror')[0];
 let style = domObj.style;
-
-
 style.position = 'absolute';
 style.left = mainTreeNode.offsetWidth + 'px';
-
-
+style.top = '0px';
 style.width = window.visualViewport.width-mainTreeNode.offsetWidth + "px";
 style.height = window.visualViewport.height + "px";
+
+let domObjSecond = document.querySelectorAll('.CodeMirror')[1];
+let styleSecond = domObjSecond.style;
+styleSecond.position = 'fixed';
+styleSecond.left = mainTreeNode.offsetWidth + 'px';
+styleSecond.top = window.visualViewport.height / 2 + 'px';
+styleSecond.width = window.visualViewport.width-mainTreeNode.offsetWidth + "px";
+styleSecond.height = window.visualViewport.height / 2 + "px";
+styleSecond.borderTop = '1px solid #444';
+if (areBothShown) {
+  styleSecond.opacity = 1;
+} else {
+  styleSecond.opacity = 0;
+}
+
 
 window.addEventListener('wheel', e=>{
   if (document.activeElement == domObj) {
@@ -79,7 +61,12 @@ window.addEventListener('wheel', e=>{
     if (domObj.scrollTop < 0) {
       domObj.scrollTop = 0;
     }
-  } else if (document.activeElement == mainTreeNode) {
+  } else if(document.activeElement == domObjSecond) {
+    domObjSecond.scrollTop += e.deltaY/5;
+    if (domObjSecond.scrollTop < 0) {
+      domObjSecond.scrollTop = 0;
+    }
+  }else if (document.activeElement == bluringTA) {
     mainTreeNode.scrollTop += e.deltaY/5;
     if (mainTreeNode.scrollTop < 0) {
       mainTreeNode.scrollTop = 0;
@@ -87,14 +74,38 @@ window.addEventListener('wheel', e=>{
   }
 });
 
+mainTreeNode.onclick = _=> {
+  saveCurrentFile();
+  bluringTA.focus();
+};
+
 domObj.onscroll = e=>{
   domObj.scrollLeft = 0;
 };
 
+domObjSecond.onscroll = e=>{
+  domObjSecond.scrollLeft = 0;
+};
+
 let onresize = e => {
+  style.top = '0px';
   style.left = mainTreeNode.offsetWidth-1 + 'px';
   style.width = window.visualViewport.width-mainTreeNode.offsetWidth+1 + "px";
   style.height = window.visualViewport.height + "px";
+
+  if (styleSecond.opacity == 1) {
+    style.height = window.visualViewport.height / 2 + "px";
+  }
+
+  styleSecond.left = mainTreeNode.offsetWidth-1 + 'px';
+  styleSecond.top = window.visualViewport.height / 2 + 'px';
+  styleSecond.width = window.visualViewport.width-mainTreeNode.offsetWidth + "px";
+  styleSecond.height = window.visualViewport.height / 2 + "px";
+
+  term.style.left = mainTreeNode.offsetWidth-1 + 'px';
+  term.style.top = window.visualViewport.height / 2 + 'px';
+  term.style.width = window.visualViewport.width-mainTreeNode.offsetWidth + "px";
+  term.style.height = window.visualViewport.height / 2 + "px";
 };
 
 window.addEventListener("resize", onresize);
@@ -111,7 +122,7 @@ let isSessionDb = 0;
 let isTerminal = 0;
 let iWasEditing = 0;
 
-let isProgressSaved = 1;
+isProgressSaved = 1;
 
 function generateToken() {
   let tok = "";

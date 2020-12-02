@@ -1,7 +1,7 @@
 /* Based on Sublime Text's Monokai theme */
 
 .cm-s-monokai.CodeMirror {
-  background: linear-gradient(#292429, #242435);
+  background: linear-gradient(#292429, #242435, #292429);
   color: #66b866;
   font-size: 20px;
   font-family: Verdana,Geneva,sans-serif;
@@ -18,7 +18,7 @@
 }
 
 .cm-s-monokai .CodeMirror-gutters {
-  background: linear-gradient(#292429, #242435);
+  background: linear-gradient(#292429, #242435, #292429);
   border-right: 1px solid #2d692d;
 }
 

@@ -55,6 +55,7 @@ function showFiles (arr, openList) {
 
   nodes.forEach((item, i) => {
     item.elem.onclick = ((e,item) => {
+      saveCurrentFile();
       if (!fs.lstatSync(item.uniqueValue).isDirectory()) {
         fs.readFile(item.uniqueValue, 'utf-8', async (err, data) => {
           if (err) {
@@ -71,7 +72,12 @@ function showFiles (arr, openList) {
 }
 
 function focusFile (fname) {
+  console.log(nodes);
   let found = 0;
+  if (nodes == [] || nodes.length == 0) {
+    console.log('no element to focus');
+    return 1;
+  }
   nodes.forEach((e,i) => {
     if (e.uniqueValue == fname) {
       e.elem.classList.add('nodeElement-focus');
