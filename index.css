@@ -25,8 +25,8 @@ body{
   align-items: center;
   justify-content: center;
 }
-#terminal {
-z-index: 100000;
+/*#terminal {
+z-index: 1000;
 background-color: #000;
 color: #FFF;
 position: fixed;
@@ -40,7 +40,7 @@ border-top: 1px solid #444;
 border: none;
 outline: none;
 resize: none;
-}
+}*/
 #treeView {
   font-family: Verdana,Geneva,sans-serif;
   font-size: 12px;

@@ -305,7 +305,12 @@ function connectToDb() {
     parent.appendChild(this.elem);
     this.elem.onclick = e=> {
       div.remove();
-      setMode(name);
+      if (currentTarea == 1) {
+        setMode(name);
+      } else {
+        setModeSecond(name);
+      }
+
       isLanguageMenu = 0;
     };
   }

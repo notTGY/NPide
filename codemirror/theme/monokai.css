@@ -4,7 +4,7 @@
   background: linear-gradient(#292429, #242435, #292429);
   color: #66b866;
   font-size: 20px;
-  font-family: Verdana,Geneva,sans-serif;
+  font-family:Arial, Helvetica, sans-serif;
 }
 
 .cm-s-monokai div.CodeMirror-selected {
@@ -123,11 +123,30 @@
   color: #f8f8f0;
 }
 
-.cm-s-monokai .CodeMirror-activeline-background {
-  background: #555;
+.cm-matchhighlight {
+  background: #7778;
+  border-radius: 5px;
+
 }
 
 .cm-s-monokai .CodeMirror-matchingbracket {
   text-decoration: underline;
-  color: white !important;
+  text-decoration-color: white;
+  color: #f66 !important;
+}
+
+ul.CodeMirror-hints.monokai {
+  background: linear-gradient(to left, #1cc7, #c1c7);
+  overflow: hidden;
+}
+ul.CodeMirror-hints.monokai > li {
+  border-bottom: 1px solid #ccc;
+  color: #0f0d;
+  font-size: 16px;
+}
+
+
+
+.CodeMirror-hint-active {
+  background: linear-gradient(#5557, #2227, #5557)!important;
 }

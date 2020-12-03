@@ -125,7 +125,7 @@ function handleKeydown(e) {
     }
   } else if (e.key == "t" && isCtrl) {
     isCtrl = 0;
-    startTerminal(term);
+    startTerminal();
   }
 
   if (isNodesFocused) {

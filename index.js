@@ -3,11 +3,6 @@ const path = require('path');
 const {remote} = require('electron');
 const {dialog} = remote;
 
-let term = document.getElementById('terminal');
-const {startTerminal} = require('./terminalSupport.js');
-term.style.opacity = 0;
-term.value = '';
-
 const TOKEN_LENGTH = 4;
 let token = '';
 const database = require("./backend.js");
@@ -46,7 +41,7 @@ styleSecond.position = 'fixed';
 styleSecond.left = mainTreeNode.offsetWidth + 'px';
 styleSecond.top = window.visualViewport.height / 2 + 'px';
 styleSecond.width = window.visualViewport.width-mainTreeNode.offsetWidth + "px";
-styleSecond.height = window.visualViewport.height / 2 + "px";
+styleSecond.height = window.visualViewport.height / 2 - 5 + "px";
 styleSecond.borderTop = '1px solid #444';
 if (areBothShown) {
   styleSecond.opacity = 1;
@@ -93,7 +88,7 @@ let onresize = e => {
   style.width = window.visualViewport.width-mainTreeNode.offsetWidth+1 + "px";
   style.height = window.visualViewport.height + "px";
 
-  if (styleSecond.opacity == 1) {
+  if (areBothShown == 1) {
     style.height = window.visualViewport.height / 2 + "px";
   }
 
@@ -102,10 +97,10 @@ let onresize = e => {
   styleSecond.width = window.visualViewport.width-mainTreeNode.offsetWidth + "px";
   styleSecond.height = window.visualViewport.height / 2 + "px";
 
-  term.style.left = mainTreeNode.offsetWidth-1 + 'px';
-  term.style.top = window.visualViewport.height / 2 + 'px';
-  term.style.width = window.visualViewport.width-mainTreeNode.offsetWidth + "px";
-  term.style.height = window.visualViewport.height / 2 + "px";
+  terminal.style.left = mainTreeNode.offsetWidth-1 + 'px';
+  terminal.style.top = window.visualViewport.height / 2 + 'px';
+  terminal.style.width = window.visualViewport.width-mainTreeNode.offsetWidth + 17 + "px";
+  terminal.style.height = window.visualViewport.height / 2 + "px";
 };
 
 window.addEventListener("resize", onresize);

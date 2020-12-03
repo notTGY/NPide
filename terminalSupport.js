@@ -1,37 +1,31 @@
 const {exec} = require('child_process');
+const ipc = require('electron').ipcRenderer;
 
-let prevValue = '';
-
-function startTerminal(elem) {
-exec('start cmd.exe', (error, stdout, stderr) => {
-    ;
+let terminal = document.getElementById('terminal');
+terminal.style.backgroundColor = '#000';
+let term = new Terminal({rows:21, cols: 100});
+terminal.style.position = 'fixed';
+terminal.style.overflow = 'hidden';
+terminal.style.opacity = 0;
+term.open(terminal);
+term.onData((data) => {
+  ipc.send("terminal.toTerm", data);
+});
+ipc.on("terminal.incData", (e, data) => {
+  term.write(data);
+  term.scrollLines(1);
 });
 
-/*
-if (elem.style.opacity == 0) {
-  elem.style.opacity = 1;
-  elem.focus();
-  elem.addEventListener('keyup',async e=>{
-    if(e.key=='Enter') {
-      let command = elem.value.substring(prevValue.length);
-      if (command.trim() == 'cls') {
-        elm.value = '';
-      } else {
-        await exec(command, (error, stdout, stderr) => {
-          elem.value += error + stdout + stderr;
-          elem.scrollTop += 100000;
-          prevValue = elem.value;
-        });
-      }
-
-    }
-  })
+function startTerminal() {
+if (terminal.style.opacity == 0 || document.activeElement == domObj) {
+  areBothShown = 1;
+  onresize();
+  term.focus();
+  terminal.style.opacity = 1;
 } else {
-  elem.value = '';
-  elem.style.opacity = 0;
+  terminal.style.opacity = 0;
+  onresize();
+  tarea.focus();
+  styleSecond.opacity = 1;
 }
-*/
 };
-
-
-module.exports = {startTerminal};
