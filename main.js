@@ -1,9 +1,9 @@
 const {app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const os = require('os');
-const pty = require('node-pty');
 const icon = __dirname + '\\favicon.ico';
 
+/*const pty = require('node-pty');
 
 const shell = process.env[os.platform() === 'win32' ? 'COMSPEC' : 'SHELL'];
 const ptyProcess = pty.spawn(shell, [], {
@@ -12,8 +12,7 @@ const ptyProcess = pty.spawn(shell, [], {
   rows: 24,
   cwd: process.cwd(),
   env: process.env
-});
-
+});*/
 
 
 function createWindow () {
@@ -30,11 +29,11 @@ function createWindow () {
   })
 
 
-  ptyProcess.on("data", data=>{mainWindow.webContents.send("terminal.incData", data)});
+  /*ptyProcess.on("data", data=>{mainWindow.webContents.send("terminal.incData", data)});
 
   ipcMain.on("terminal.toTerm", (e, data) => {
       ptyProcess.write(data);
-  });
+  });*/
 
 
   mainWindow.setMenuBarVisibility(false);

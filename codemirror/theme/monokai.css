@@ -8,12 +8,12 @@
 }
 
 .cm-s-monokai div.CodeMirror-selected {
-  background: linear-gradient(to right, #f548, #45f8);
+  background: #9998;
   border-radius: 5px;
 }
 
 .cm-s-monokai .CodeMirror-line::selection, .cm-s-monokai .CodeMirror-line > span::selection, .cm-s-monokai .CodeMirror-line > span > span::selection {
-  background: linear-gradient(to right, #f54, #45f);
+  background: #9998;
   border-radius: 5px;
 }
 
@@ -136,10 +136,11 @@
 }
 
 ul.CodeMirror-hints.monokai {
-  background: linear-gradient(to left, #1cc7, #c1c7);
+  background: #444;
   overflow: hidden;
 }
 ul.CodeMirror-hints.monokai > li {
+  border-radius: 0px;
   border-bottom: 1px solid #ccc;
   color: #0f0d;
   font-size: 16px;
@@ -148,5 +149,5 @@ ul.CodeMirror-hints.monokai > li {
 
 
 .CodeMirror-hint-active {
-  background: linear-gradient(#5557, #2227, #5557)!important;
+  background: linear-gradient(#ccc7, #aaa7, #ccc7)!important;
 }

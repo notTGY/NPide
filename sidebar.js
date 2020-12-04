@@ -3,6 +3,7 @@ let mainTreeNode = document.getElementById('treeView');
 let nodes = [];
 
 const directoryEmbed = '<img src="./assets/icons/directory.png" width=10></img> ';
+const directoryOpenEmbed = '<img src="./assets/icons/directory-open.png" width=10></img> ';
 
 
 
@@ -26,18 +27,10 @@ function showFiles (arr, openList) {
     let str = '';
     nodes[i].depth = e.depth;
     if (e.depth) {
-      str += 'ᶫ';
-      for (let i = 1; i < e.depth; i++) {
-        str += '-';
+      for (let i = 0; i < e.depth; i++) {
+        str += ' ';
       }
-      str += '>';
     }
-
-    if (isDir) {
-      str += directoryEmbed;
-    }
-
-    nodes[i].elem.innerHTML = str + path.basename(e.val);
 
     if (openList.length > 0) {
       openList.forEach(item => {
@@ -46,6 +39,20 @@ function showFiles (arr, openList) {
         }
       });
     }
+
+
+    if (isDir) {
+      if (nodes[i].open) {
+        console.log('hi');
+        str += directoryOpenEmbed;
+      } else {
+        str += directoryEmbed;
+      }
+    }
+
+    nodes[i].elem.innerHTML = str + path.basename(e.val);
+
+
     mainTreeNode.appendChild(nodes[i].elem);
   });
 
@@ -66,9 +73,12 @@ function showFiles (arr, openList) {
           });
         } else {
           toggleDir(item.uniqueValue);
+          onresize();
         }
     }).bind(null, null, item);
   });
+  console.log(nodes);
+  setTimeout(onresize, 0);
 }
 
 function focusFile (fname) {

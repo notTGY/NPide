@@ -46,17 +46,16 @@ function handleKeydown(e) {
     isCtrl = 0;
     dialog.showOpenDialog({}).then(e=>{
       sourcePath = e.filePaths[0];
+      folderPath = path.dirname(sourcePath);
       if (e.filePaths.length > 1) {
-        e.filePaths = e.filePaths.map(a=>({val:path.join(e.filePath[0],a), depth:0}));
+        e.filePaths = e.filePaths.map(a=>({val:a.filePaths[0], depth:0}));
         showFiles(e.filePaths);
-        onresize();
       } else {
         folderPath = path.dirname(sourcePath);
         fs.readdir(folderPath, 'utf8', (err,data)=>{
           filesOpened = data;
-          data = data.map(e=>({val:path.join(folderPath, e), depth:0}));
+          data = data.map(a=>({val:path.join(folderPath, a), depth:0}));
           showFiles(data);
-          onresize();
         });
       }
       folderPath = path.dirname(sourcePath);
