@@ -1,21 +1,29 @@
 const fs = require('fs');
 const path = require('path');
-const {remote} = require('electron');
+const {remote, ipcRenderer} = require('electron');
 const {dialog} = remote;
+const ipc = ipcRenderer;
 
 const TOKEN_LENGTH = 4;
 let token = '';
-const database = require("./backend.js");
+const {database , generateToken} = require("./backend.js");
 
-const {myCodeMirror, setMode, mySecondCodeMirror, setModeSecond} = require('./codemirror-plugin.js');
+const {myCodeMirror, setMode /*, mySecondCodeMirror, setModeSecond*/} = require('./codemirror-plugin.js');
 const tarea = myCodeMirror;
-const secondTarea = mySecondCodeMirror;
+/*const secondTarea = mySecondCodeMirror;*/
 
 let currentTarea = 1;
 let areBothShown = 0;
+let areWeAutocompleting = 1;
+
+if (window.localStorage.getItem('autocompletion') == null) {
+  areWeAutocompleting = 1;
+} else {
+  areWeAutocompleting = Number(window.localStorage.getItem('autocompletion'));
+}
 
 tarea.setValue("");
-secondTarea.setValue("");
+/*secondTarea.setValue("");*/
 
 const href = window.location.href;
 sourcePath = unescape(unescape(href.substring(href.indexOf('?data=')+6)));
@@ -24,7 +32,6 @@ let folderPath = '';
 let currentFilePath = '';
 let currentFullPath =(a,b)=>path.join([a,b]);
 if (sourcePath != "undefined") {
-  console.log({sourcePath});
   init_fs();
 }
 
@@ -38,7 +45,7 @@ style.top = '0px';
 style.width = window.visualViewport.width-mainTreeNode.offsetWidth - 18 + "px";
 style.height = window.visualViewport.height + "px";
 
-let domObjSecond = document.querySelectorAll('.CodeMirror')[1];
+/*let domObjSecond = document.querySelectorAll('.CodeMirror')[1];
 let styleSecond = domObjSecond.style;
 styleSecond.position = 'fixed';
 styleSecond.left = mainTreeNode.offsetWidth + 18 + 'px';
@@ -50,7 +57,7 @@ if (areBothShown) {
   styleSecond.opacity = 1;
 } else {
   styleSecond.opacity = 0;
-}
+}*/
 
 
 window.addEventListener('wheel', e=>{
@@ -59,17 +66,18 @@ window.addEventListener('wheel', e=>{
     if (domObj.scrollTop < 0) {
       domObj.scrollTop = 0;
     }
-  } else if(document.activeElement == domObjSecond) {
+  } /*else if(document.activeElement == domObjSecond) {
     domObjSecond.scrollTop += e.deltaY/5;
     if (domObjSecond.scrollTop < 0) {
       domObjSecond.scrollTop = 0;
     }
-  }else if (document.activeElement == bluringTA) {
+  }*/ else if (document.activeElement == bluringTA) {
     mainTreeNode.scrollTop += e.deltaY/5;
     if (mainTreeNode.scrollTop < 0) {
       mainTreeNode.scrollTop = 0;
     }
   }
+    onresize();
 });
 
 mainTreeNode.onclick = _=> {
@@ -79,37 +87,12 @@ mainTreeNode.onclick = _=> {
 
 domObj.onscroll = e=>{
   domObj.scrollLeft = 0;
+  onresize();
 };
 
-domObjSecond.onscroll = e=>{
+/*domObjSecond.onscroll = e=>{
   domObjSecond.scrollLeft = 0;
-};
-
-let onresize = e => {
-
-  style.top = '0px';
-  style.left = mainTreeNode.offsetWidth - 1 + 'px';
-  style.width = window.visualViewport.width-mainTreeNode.offsetWidth + 1 + "px";
-  style.height = window.visualViewport.height + "px";
-
-  if (areBothShown == 1) {
-    style.height = window.visualViewport.height / 2 + "px";
-  }
-
-  styleSecond.left = mainTreeNode.offsetWidth - 1 + 'px';
-  styleSecond.top = window.visualViewport.height / 2 + 'px';
-  styleSecond.width = window.visualViewport.width-mainTreeNode.offsetWidth + 1 + "px";
-  styleSecond.height = window.visualViewport.height / 2 + "px";
-
-
-  terminal.style.left = mainTreeNode.offsetWidth - 1 + 'px';
-  terminal.style.top = window.visualViewport.height / 2 + 'px';
-  terminal.style.width = window.visualViewport.width-mainTreeNode.offsetWidth + 1 + "px";
-  terminal.style.height = window.visualViewport.height / 2 + "px";
-};
-
-window.addEventListener("resize", onresize);
-
+};*/
 
 window.addEventListener("keydown", handleKeydown);
 window.addEventListener("keyup", handleKeyup);
@@ -124,14 +107,5 @@ let iWasEditing = 0;
 
 isProgressSaved = 1;
 
-function generateToken() {
-  let tok = "";
-  let rnd;
-  for (let i = 0; i < TOKEN_LENGTH; i++) {
-    rnd = String.fromCharCode(
-      "a".charCodeAt(0) + Math.floor(Math.random() * 10)
-    );
-    tok += rnd;
-  }
-  return tok;
-}
+let icpcMusicElem = document.getElementById('icpc');
+icpcMusicElem.volume = .1;

@@ -13,6 +13,11 @@ function handleKeydown(e) {
     }
   }
 
+  if (e.key == 'Enter') {
+    onresize();
+  }
+
+
   if (e.key == "Control") {
     isCtrl = 1;
   } else if (e.key == "Shift") {
@@ -27,7 +32,7 @@ function handleKeydown(e) {
     isCtrl = 0;
     add_new_file();
   } else if (e.key == '2' && isCtrl) {
-    isCtrl = 0;
+    /*isCtrl = 0;
     saveCurrentFile();
     if (styleSecond.opacity == 0) {
       styleSecond.opacity = 1;
@@ -35,13 +40,13 @@ function handleKeydown(e) {
       areBothShown = 1;
     }
     currentTarea = 2;
-    hotSwap();
+    hotSwap();*/
   } else if (e.key == '1' && isCtrl) {
-    isCtrl = 0;
+    /*isCtrl = 0;
     currentTarea = 1;
     setTimeout(_=>{onresize();}, 0);
     areBothShown = 0;
-    styleSecond.opacity = 0;
+    styleSecond.opacity = 0;*/
   } else if (e.key == "o" && isCtrl) {
     isCtrl = 0;
     dialog.showOpenDialog({}).then(e=>{
@@ -68,6 +73,7 @@ function handleKeydown(e) {
             throw err;
         }
         tarea.setValue(data);
+        putFile(sourcePath);
       });
     });
   } else if (e.key == "g" && isCtrl) {
@@ -148,6 +154,7 @@ function handleKeydown(e) {
               throw err;
           }
           tarea.setValue(data);
+          putFile(nodes[nodeFocusNumber].uniqueValue);
         });
       } else {
         toggleDir(nodes[nodeFocusNumber].uniqueValue);

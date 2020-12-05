@@ -70,6 +70,7 @@ function showFiles (arr, openList) {
             }
             tarea.setValue(data);
             currentFilePath = item.uniqueValue;
+            putFile(currentFilePath);
           });
         } else {
           toggleDir(item.uniqueValue);
@@ -77,7 +78,6 @@ function showFiles (arr, openList) {
         }
     }).bind(null, null, item);
   });
-  console.log(nodes);
   setTimeout(onresize, 0);
 }
 

@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>NPide   (Ctrl + Alt + H for help)</title>
+    <title>NPide</title>
 
     <link rel="stylesheet" href="node_modules/xterm/css/xterm.css" />
     <script src="node_modules/xterm/lib/xterm.js"></script>
@@ -12,20 +12,25 @@
 
     <link rel="stylesheet" href="./codemirror/addon/hint/show-hint.css">
 
+    <link rel="stylesheet" href="./loading.css">
     <link rel="stylesheet" href="./index.css">
   </head>
   <body translate="no">
+
+  <audio src="./assets/music/icpc.wav" id="icpc" hidden loop></audio>
 
   <div id="loading_div">
     <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
   </div>
 
   <div id="mainAreaWrapper">
+    <div id="topBar"></div>
+
     <div id="treeView"></div>
 
     <textarea id="editorArea" autofocus>
     </textarea>
-    <textarea id="secondEditorArea">
+    <textarea id="secondEditorArea" hidden>
     </textarea>
 
 
@@ -59,8 +64,11 @@
   <script src="./filesystem.js"></script>
   <script src="./keylogger.js"></script>
   <script src="./sidebar.js"></script>
+  <script src="./topBar.js"></script>
   <script src="./secondScreen.js"></script>
   <script src="./index.js"></script>
+  <script src="./resizing.js"></script>
+  <script src="./nativemenu.js"></script>
   <script src="./gui.js"></script>
   <script src="./onstart.js"></script>
 </html>

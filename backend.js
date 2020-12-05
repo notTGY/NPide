@@ -1,8 +1,6 @@
 const monk = require("monk");
 
-const password = require("./secrets").password;
-
-const uri = `mongodb+srv://ide-backend:${password}@cluster0.5xlpu.mongodb.net/ide-backend?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://ide-backend:${require("./secrets").password}@cluster0.5xlpu.mongodb.net/ide-backend?retryWrites=true&w=majority`;
 
 const db = monk(uri);
 
@@ -25,8 +23,21 @@ async function insertCode(token, code) {
   return collection.update({ token: token }, { $set: { code: code } });
 }
 
+function generateToken() {
+  let tok = "";
+  let rnd;
+  for (let i = 0; i < TOKEN_LENGTH; i++) {
+    rnd = String.fromCharCode(
+      "a".charCodeAt(0) + Math.floor(Math.random() * 10)
+    );
+    tok += rnd;
+  }
+  return tok;
+}
+
 module.exports = {
   collection,
   findCode,
-  insertCode
+  insertCode,
+  generateToken
 };

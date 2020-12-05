@@ -308,7 +308,7 @@ function connectToDb() {
       if (currentTarea == 1) {
         setMode(name);
       } else {
-        setModeSecond(name);
+        //setModeSecond(name);
       }
 
       isLanguageMenu = 0;

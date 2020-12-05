@@ -24,7 +24,9 @@ let myCodeMirror = CodeMirror.fromTextArea(tarea, {
 
 myCodeMirror.on("keyup", function (cm, event) {
   if (!cm.state.completionActive && wasDotOrLetter(event.keyCode)) {
-    CodeMirror.commands.autocomplete(cm, null, {completeSingle: false});
+    if (areWeAutocompleting) {
+      CodeMirror.commands.autocomplete(cm, null, {completeSingle: false});
+    }
   }
 });
 
@@ -32,7 +34,7 @@ function setMode(lang) {
   myCodeMirror.setOption("mode" , lang);
 }
 
-let mySecondCodeMirror = CodeMirror.fromTextArea(secondTarea, {
+/*let mySecondCodeMirror = CodeMirror.fromTextArea(secondTarea, {
   mode: "javascript",
   theme: "monokai",
   tabSize : 2,
@@ -54,6 +56,6 @@ mySecondCodeMirror.on("keyup", function (cm, event) {
 
 function setModeSecond(lang) {
   mySecondCodeMirror.setOption("mode" , lang);
-}
+}*/
 
-module.exports = {myCodeMirror, setMode, mySecondCodeMirror, setModeSecond};
+module.exports = {myCodeMirror, setMode /*, mySecondCodeMirror, setModeSecond*/};

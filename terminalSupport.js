@@ -21,14 +21,16 @@ ipc.on("terminal.incData", (e, data) => {
 
 function startTerminal() {
 if (terminal.style.opacity == 0 || document.activeElement == domObj) {
-  areBothShown = 1;
+  //areBothShown = 1;
   onresize();
   term.focus();
   terminal.style.opacity = 1;
+  terminal.hidden = false;
 } else {
   terminal.style.opacity = 0;
+  terminal.hidden = true;
   onresize();
   tarea.focus();
-  styleSecond.opacity = 1;
+  //styleSecond.opacity = 1;
 }
 };
