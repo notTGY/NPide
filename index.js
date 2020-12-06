@@ -17,7 +17,7 @@ let areBothShown = 0;
 let areWeAutocompleting = 1;
 
 if (window.localStorage.getItem('autocompletion') == null) {
-  areWeAutocompleting = 1;
+  areWeAutocompleting = 0;
 } else {
   areWeAutocompleting = Number(window.localStorage.getItem('autocompletion'));
 }
@@ -108,4 +108,4 @@ let iWasEditing = 0;
 isProgressSaved = 1;
 
 let icpcMusicElem = document.getElementById('icpc');
-icpcMusicElem.volume = .1;
+icpcMusicElem.volume = .7;

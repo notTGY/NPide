@@ -62,6 +62,7 @@ body{
   background: linear-gradient(to right, #292429, #242435, #292429);
   display: flex;
   flex-direction: row;
+  border-bottom: 3px solid #181c24;
   align-items: center;
   font-family: Verdana,Geneva,sans-serif;
   font-size: 12px;
@@ -86,6 +87,30 @@ body{
 .barElement::selection {
   background: #0000;
 }
+.closingButton {
+  width: 15px;
+  margin-left: 10px;
+}
+.closingButton:hover {
+  background: #243479;
+}
+
+.xterm-text-layer {
+z-index: 101!important;
+}
+.xterm-viewport {
+overflow: hidden!important;
+}
+.xterm-selection-layer {
+z-index: 102!important;
+}
+.xterm-link-layer {
+z-index: 103!important;
+}
+.xterm-cursor-layer {
+z-index: 104!important;
+}
+
 #bluringTA {
   position: fixed;
   bottom: 0px;

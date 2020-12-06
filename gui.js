@@ -165,7 +165,7 @@ function connectToDb() {
 
     let bigFourElements = [
       new LanguageOption("javascript", bigFour, div, 200),
-      new LanguageOption("clike", bigFour, div, 200),
+      new LanguageOption("text/x-c++src", bigFour, div, 200),
       new LanguageOption("ruby", bigFour, div, 200),
       new LanguageOption("python", bigFour, div, 200),
     ];
@@ -301,6 +301,10 @@ function connectToDb() {
     this.elem.style.width = size+'px';
     this.elem.style.height = size+'px';
     this.elem.src = `./assets/img/${name}.png`;
+    if(name == 'text/x-c++src') {
+      this.elem.src = `./assets/img/clike.png`;
+    }
+
     this.elem.alt = name;
     parent.appendChild(this.elem);
     this.elem.onclick = e=> {

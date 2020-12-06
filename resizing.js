@@ -1,9 +1,9 @@
 let onresize = e => {
 
-  style.top = 30 + 'px';
+  style.top = 33 + 'px';
   style.left = mainTreeNode.offsetWidth + 2 + 'px';
   style.width = window.visualViewport.width-mainTreeNode.offsetWidth + 1 + "px";
-  style.height = window.visualViewport.height + "px";
+  style.height = window.visualViewport.height - 33 + "px";
 
   topBar.style.top = '0px';
   topBar.style.left = mainTreeNode.offsetWidth - 1 + 'px';
@@ -11,8 +11,7 @@ let onresize = e => {
   topBar.style.width = window.visualViewport.width-mainTreeNode.offsetWidth + 1 + "px";
 
 
-  mainTreeNode.style.height = style.height;
-  setTimeout(_=>{mainTreeNode.style.height = window.visualViewport.height + "px";}, 50);
+  mainTreeNode.style.height = window.visualViewport.height + "px";
 
 
   /*if (areBothShown == 1) {
@@ -25,6 +24,7 @@ let onresize = e => {
   styleSecond.height = window.visualViewport.height / 2 + "px";
   */
 
+  terminal.style.zIndex = 100;
   terminal.style.left = mainTreeNode.offsetWidth + 1 + 'px';
   terminal.style.top = window.visualViewport.height / 2 + 'px';
   terminal.style.width = window.visualViewport.width-mainTreeNode.offsetWidth + 1 + "px";

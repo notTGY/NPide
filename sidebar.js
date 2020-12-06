@@ -56,7 +56,7 @@ function showFiles (arr, openList) {
     mainTreeNode.appendChild(nodes[i].elem);
   });
 
-  if (nodeFocusNumber != undefined) {
+  if (nodeFocusNumber != undefined && nodes[nodeFocusNumber] != undefined) {
     nodes[nodeFocusNumber].elem.classList.add('nodeElement-focus');
   }
 

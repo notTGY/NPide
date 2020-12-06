@@ -29,8 +29,7 @@ function putFile(p) {
     openFiles[index].elem = document.createElement('div');
     openFiles[index].button = document.createElement('img');
     openFiles[index].button.src = './assets/icons/cross.png';
-    openFiles[index].button.style.marginLeft = '10px';
-    openFiles[index].button.style.width = '15px';
+    openFiles[index].button.classList.add('closingButton');
     openFiles[index].elem.classList.add('barElement');
     openFiles[index].elem.innerHTML = openFiles[index].text + ' ';
 
@@ -73,7 +72,7 @@ function putFile(p) {
       }
       item.elem.onclick = _=> {
         saveCurrentFile();
-        sourcePath = item.path;
+        currentFilePath = item.path;
         fs.readFile(item.path, 'utf-8', async (err, data) => {
           if (err) {
               throw err;

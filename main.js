@@ -3,16 +3,7 @@ const path = require('path');
 const os = require('os');
 const icon = __dirname + '\\favicon.ico';
 
-/*const pty = require('node-pty');
 
-const shell = process.env[os.platform() === 'win32' ? 'COMSPEC' : 'SHELL'];
-const ptyProcess = pty.spawn(shell, [], {
-  name: 'xterm-color',
-  cols: 80,
-  rows: 24,
-  cwd: process.cwd(),
-  env: process.env
-});*/
 let mainMenu;
 
 function createWindow () {
@@ -29,11 +20,28 @@ function createWindow () {
   })
 
 
-  /*ptyProcess.on("data", data=>{mainWindow.webContents.send("terminal.incData", data)});
+  /*
+  const pty = require('node-pty');
+
+  const shell = process.env[os.platform() === 'win32' ? 'COMSPEC' : 'SHELL'];
+  const ptyProcess = pty.spawn(shell, [], {
+    name: 'xterm-color',
+    cols: 80,
+    rows: 24,
+    cwd: process.cwd(),
+    env: process.env
+  });
+
+  ptyProcess.on("data", data=>{mainWindow.webContents.send("terminal.incData", data)});
 
   ipcMain.on("terminal.toTerm", (e, data) => {
       ptyProcess.write(data);
-  });*/
+  });
+
+  /**/
+
+
+
 
 
   //mainWindow.setMenuBarVisibility(false);
@@ -44,6 +52,7 @@ function createWindow () {
 
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   Menu.setApplicationMenu(mainMenu);
+  mainWindow.maximize();
 }
 
 
