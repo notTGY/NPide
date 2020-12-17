@@ -15,7 +15,6 @@ if (areWeInNativeApp) {
 }
 
 const tarea = myCodeMirror;
-/*const secondTarea = mySecondCodeMirror;*/
 
 let currentTarea = 1;
 let areBothShown = 0;
