@@ -131,6 +131,9 @@ function handleKeydown(e) {
   } else if (e.key == "t" && isCtrl) {
     isCtrl = 0;
     startTerminal();
+  } else if (e.key == 'Tab' && isCtrl) {
+    isCtrl = 0;
+    goToNext();
   }
 
   if (isNodesFocused) {

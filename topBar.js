@@ -38,6 +38,7 @@ function putFile(p) {
     openFiles[index].elem.appendChild(openFiles[index].button);
 
     openFiles[index].button.onclick = _=> {
+      openFiles[index].deleted = true;
       removeFile(openFiles[index].path);
       if (openFiles.length == 0) {
         topBar.innerHTML = '<pre>     </pre>empty';
@@ -45,8 +46,12 @@ function putFile(p) {
     };
 
     openFiles[index].elem.onclick = _=> {
+      if (!openFiles[index] || openFiles[index].deleted) {
+        return 0;
+      }
       saveCurrentFile();
       sourcePath = openFiles[index].path;
+      updateFileSelectorStyles();
       fs.readFile(openFiles[index].path, 'utf-8', async (err, data) => {
         if (err) {
             throw err;
@@ -73,6 +78,7 @@ function putFile(p) {
       item.elem.onclick = _=> {
         saveCurrentFile();
         currentFilePath = item.path;
+        currentFocus = i;
         fs.readFile(item.path, 'utf-8', async (err, data) => {
           if (err) {
               throw err;
@@ -86,6 +92,7 @@ function putFile(p) {
 
 
 function removeFile(p) {
+  updateFileSelectorStyles();
   let condition = -1;
   openFiles.forEach((item, i) => {
     if (item.path == p) {
@@ -94,8 +101,47 @@ function removeFile(p) {
   });
   if (condition != -1) {
     openFiles[condition].elem.remove();
+    let prev = [...openFiles];
+
+    if (currentFocus == condition) {
+      currentFocus = undefined;
+    }
+
+    let sp = 0;
+    openFiles = [];
+    prev.forEach((item, i) => {
+      if (i != condition) {
+        openFiles[sp++] = item;
+      }
+    });
+
+
     if (openFiles.length == 0) {
       topBar.innerHTML = '<pre>     </pre>empty';
     }
   }
+}
+
+
+function updateFileSelectorStyles() {
+  openFiles.forEach((item, i) => {
+    item.elem.style.background = '#0000';
+    if (i == currentFocus) {
+      item.elem.style.background = '#243439';
+    }
+  });
+
+}
+
+function goToNext() {
+  updateFileSelectorStyles();
+  saveCurrentFile();
+  currentFocus = (currentFocus + 1) % openFiles.length;
+  currentFilePath = openFiles[currentFocus].path;
+  fs.readFile(currentFilePath, 'utf-8', async (err, data) => {
+    if (err) {
+        throw err;
+    }
+    tarea.setValue(data);
+  });
 }
