@@ -1,4 +1,4 @@
-const tarea = document.getElementById("editorArea");
+const tareaElement = document.getElementById("editorArea");
 const secondTarea = document.getElementById("secondEditorArea");
 
 
@@ -8,7 +8,7 @@ function wasDotOrLetter(a) {
   return 0;
 }
 
-let myCodeMirror = CodeMirror.fromTextArea(tarea, {
+let myCodeMirror = CodeMirror.fromTextArea(tareaElement, {
   mode: "javascript",
   theme: "monokai",
   tabSize : 2,
@@ -33,29 +33,3 @@ myCodeMirror.on("keyup", function (cm, event) {
 function setMode(lang) {
   myCodeMirror.setOption("mode" , lang);
 }
-
-/*let mySecondCodeMirror = CodeMirror.fromTextArea(secondTarea, {
-  mode: "javascript",
-  theme: "monokai",
-  tabSize : 2,
-  keyMap: "sublime",
-  lineWrapping: true,
-  lineNumbers: true,
-  autofocus: true,
-  scrollbarStyle: "null",
-  matchBrackets: true,
-  highlightSelectionMatches : true,
-  extraKeys: {"Ctrl-Space": "autocomplete"}
-});
-
-mySecondCodeMirror.on("keyup", function (cm, event) {
-  if (!cm.state.completionActive && wasDotOrLetter(event.keyCode)) {
-    CodeMirror.commands.autocomplete(cm, null, {completeSingle: false});
-  }
-});
-
-function setModeSecond(lang) {
-  mySecondCodeMirror.setOption("mode" , lang);
-}*/
-
-module.exports = {myCodeMirror, setMode /*, mySecondCodeMirror, setModeSecond*/};

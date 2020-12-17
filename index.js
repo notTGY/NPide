@@ -1,14 +1,19 @@
-const fs = require('fs');
-const path = require('path');
-const {remote, ipcRenderer} = require('electron');
-const {dialog} = remote;
-const ipc = ipcRenderer;
+if (areWeInNativeApp) {
+  fs = require('fs');
+  path = require('path');
+  let obj = {remote, ipcRenderer} = require('electron');
+  remote = obj.remote;
+  ipcRenderer = obj.ipcRenderer;
+  dialog = remote.dialog;
+  ipc = ipcRenderer;
 
-const TOKEN_LENGTH = 4;
-let token = '';
-const {database , generateToken} = require("./backend.js");
+  TOKEN_LENGTH = 4;
+  token = '';
+  obj = require("./backend.js");
+  database = obj.database;
+  generateToken = obj.generateToken;
+}
 
-const {myCodeMirror, setMode /*, mySecondCodeMirror, setModeSecond*/} = require('./codemirror-plugin.js');
 const tarea = myCodeMirror;
 /*const secondTarea = mySecondCodeMirror;*/
 
@@ -23,7 +28,7 @@ if (window.localStorage.getItem('autocompletion') == null) {
 }
 
 tarea.setValue("");
-/*secondTarea.setValue("");*/
+
 
 const href = window.location.href;
 sourcePath = unescape(unescape(href.substring(href.indexOf('?data=')+6)));
@@ -31,7 +36,7 @@ let filesOpened = [];
 let folderPath = '';
 let currentFilePath = '';
 let currentFullPath =(a,b)=>path.join([a,b]);
-if (sourcePath != "undefined") {
+if (sourcePath != "undefined" && areWeInNativeApp) {
   init_fs();
 }
 
@@ -45,20 +50,6 @@ style.top = '0px';
 style.width = window.visualViewport.width-mainTreeNode.offsetWidth - 18 + "px";
 style.height = window.visualViewport.height + "px";
 
-/*let domObjSecond = document.querySelectorAll('.CodeMirror')[1];
-let styleSecond = domObjSecond.style;
-styleSecond.position = 'fixed';
-styleSecond.left = mainTreeNode.offsetWidth + 18 + 'px';
-styleSecond.top = window.visualViewport.height / 2 + 'px';
-styleSecond.width = window.visualViewport.width-mainTreeNode.offsetWidth - 18 + "px";
-styleSecond.height = window.visualViewport.height / 2 - 5 + "px";
-styleSecond.borderTop = '4px solid #181c24';
-if (areBothShown) {
-  styleSecond.opacity = 1;
-} else {
-  styleSecond.opacity = 0;
-}*/
-
 
 window.addEventListener('wheel', e=>{
   if (document.activeElement == domObj) {
@@ -66,12 +57,7 @@ window.addEventListener('wheel', e=>{
     if (domObj.scrollTop < 0) {
       domObj.scrollTop = 0;
     }
-  } /*else if(document.activeElement == domObjSecond) {
-    domObjSecond.scrollTop += e.deltaY/5;
-    if (domObjSecond.scrollTop < 0) {
-      domObjSecond.scrollTop = 0;
-    }
-  }*/ else if (document.activeElement == bluringTA) {
+  } else if (document.activeElement == bluringTA) {
     mainTreeNode.scrollTop += e.deltaY/5;
     if (mainTreeNode.scrollTop < 0) {
       mainTreeNode.scrollTop = 0;
@@ -81,7 +67,9 @@ window.addEventListener('wheel', e=>{
 });
 
 mainTreeNode.onclick = _=> {
-  saveCurrentFile();
+  if (areWeInNativeApp) {
+    saveCurrentFile();
+  }
   bluringTA.focus();
 };
 
@@ -90,9 +78,6 @@ domObj.onscroll = e=>{
   onresize();
 };
 
-/*domObjSecond.onscroll = e=>{
-  domObjSecond.scrollLeft = 0;
-};*/
 
 window.addEventListener("keydown", handleKeydown);
 window.addEventListener("keyup", handleKeyup);

@@ -26,83 +26,77 @@ function handleKeydown(e) {
     isAlt = 1;
   } else if (e.key == "s" && isCtrl) {
     isCtrl = 0;
-    saveCurrentFile();
-  } else if (e.key == 'n' && isCtrl) {
-    saveCurrentFile();
-    isCtrl = 0;
-    add_new_file();
-  } else if (e.key == '2' && isCtrl) {
-    /*isCtrl = 0;
-    saveCurrentFile();
-    if (styleSecond.opacity == 0) {
-      styleSecond.opacity = 1;
-      setTimeout(_=>{onresize();}, 0);
-      areBothShown = 1;
+    if (areWeInNativeApp) {
+      saveCurrentFile();
     }
-    currentTarea = 2;
-    hotSwap();*/
-  } else if (e.key == '1' && isCtrl) {
-    /*isCtrl = 0;
-    currentTarea = 1;
-    setTimeout(_=>{onresize();}, 0);
-    areBothShown = 0;
-    styleSecond.opacity = 0;*/
+  } else if (e.key == 'n' && isCtrl) {
+    isCtrl = 0;
+    if (areWeInNativeApp) {
+      saveCurrentFile();
+      add_new_file();
+    }
   } else if (e.key == "o" && isCtrl) {
     isCtrl = 0;
-    dialog.showOpenDialog({}).then(e=>{
-      sourcePath = e.filePaths[0];
-      folderPath = path.dirname(sourcePath);
-      if (e.filePaths.length > 1) {
-        e.filePaths = e.filePaths.map(a=>({val:a.filePaths[0], depth:0}));
-        showFiles(e.filePaths);
-      } else {
+    if (areWeInNativeApp) {
+      dialog.showOpenDialog({}).then(e=>{
+        sourcePath = e.filePaths[0];
+        folderPath = path.dirname(sourcePath);
+        if (e.filePaths.length > 1) {
+          e.filePaths = e.filePaths.map(a=>({val:a.filePaths[0], depth:0}));
+          showFiles(e.filePaths);
+        } else {
+          folderPath = path.dirname(sourcePath);
+          fs.readdir(folderPath, 'utf8', (err,data)=>{
+            filesOpened = data;
+            data = data.map(a=>({val:path.join(folderPath, a), depth:0}));
+            showFiles(data);
+          });
+        }
         folderPath = path.dirname(sourcePath);
         fs.readdir(folderPath, 'utf8', (err,data)=>{
           filesOpened = data;
-          data = data.map(a=>({val:path.join(folderPath, a), depth:0}));
-          showFiles(data);
         });
-      }
-      folderPath = path.dirname(sourcePath);
-      fs.readdir(folderPath, 'utf8', (err,data)=>{
-        filesOpened = data;
+        currentFilePath = path.basename(sourcePath);
+        fs.readFile(sourcePath, 'utf-8', async (err, data) => {
+          if (err) {
+              throw err;
+          }
+          tarea.setValue(data);
+          putFile(sourcePath);
+        });
       });
-      currentFilePath = path.basename(sourcePath);
-      fs.readFile(sourcePath, 'utf-8', async (err, data) => {
-        if (err) {
-            throw err;
-        }
-        tarea.setValue(data);
-        putFile(sourcePath);
-      });
-    });
+    }
   } else if (e.key == "g" && isCtrl) {
     isCtrl = 0;
-    if (!isNodesFocused) {
-      focusFile(currentFilePath);
-      bluringTA.focus();
-      isNodesFocused = 1;
-      tarea.autofocus = false;
-    } else {
-      removeFocus();
-      nodeFocusNumber = undefined;
-      tarea.autofocus = true;
-      tarea.focus();
-      isNodesFocused = 0;
+    if (areWeInNativeApp) {
+      if (!isNodesFocused) {
+        focusFile(currentFilePath);
+        bluringTA.focus();
+        isNodesFocused = 1;
+        tarea.autofocus = false;
+      } else {
+        removeFocus();
+        nodeFocusNumber = undefined;
+        tarea.autofocus = true;
+        tarea.focus();
+        isNodesFocused = 0;
+      }
     }
   } else if (e.key == "d" && isCtrl && isAlt) {
     isAlt = 0;
     isCtrl = 0;
-    if (!isSessionDb) {
-      connectToDb();
-    } else {
-      let inp = document.getElementById('session_inp_id');
-      let div = document.getElementById('session_div_id');
-      inp.remove();
-      div.remove();
-      isSessionDb = 0;
-      tarea.autofocus = true;
-      tarea.focus();
+    if (areWeInNativeApp) {
+      if (!isSessionDb) {
+        connectToDb();
+      } else {
+        let inp = document.getElementById('session_inp_id');
+        let div = document.getElementById('session_div_id');
+        inp.remove();
+        div.remove();
+        isSessionDb = 0;
+        tarea.autofocus = true;
+        tarea.focus();
+      }
     }
   } else if (e.key == "h" && isCtrl && isAlt) {
     isAlt = 0;
@@ -130,7 +124,9 @@ function handleKeydown(e) {
     }
   } else if (e.key == "t" && isCtrl) {
     isCtrl = 0;
-    startTerminal();
+    if (areWeInNativeApp) {
+      startTerminal();
+    }
   } else if (e.key == 'Tab' && isCtrl) {
     isCtrl = 0;
     goToNext();

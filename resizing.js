@@ -13,17 +13,6 @@ let onresize = e => {
 
   mainTreeNode.style.height = window.visualViewport.height + "px";
 
-
-  /*if (areBothShown == 1) {
-    style.height = window.visualViewport.height / 2 + "px";
-  }
-
-  styleSecond.left = mainTreeNode.offsetWidth - 1 + 'px';
-  styleSecond.top = window.visualViewport.height / 2 + 'px';
-  styleSecond.width = window.visualViewport.width-mainTreeNode.offsetWidth + 1 + "px";
-  styleSecond.height = window.visualViewport.height / 2 + "px";
-  */
-
   terminal.style.zIndex = 100;
   terminal.style.left = mainTreeNode.offsetWidth + 1 + 'px';
   terminal.style.top = window.visualViewport.height / 2 + 'px';
