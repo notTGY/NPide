@@ -62,3 +62,53 @@ body {
   justify-content: center;
   border-radius: 50%;
 }
+
+#thirdPage {
+  flex-direction: column;
+  align-items: center;
+  background: #42275a;
+  background-image: linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);
+  color: #000;
+}
+#thirdPage>a:visited {
+  text-decoration: none;
+  color: #000;
+}
+#thirdPage>h1 {
+  margin-top: 10rem;
+  font-size: 60px;
+  color: #000;
+  margin-bottom: 10rem;
+}
+#thirdPage>a {
+  font-size: 40px;
+  color: #000;
+  text-decoration: none;
+  border: 3px solid #fff;
+  border-radius: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+#thirdPage>small {
+  font-size: 20px;
+  padding-top: 1rem;
+}
+#thirdPage>a:hover {
+  font-size: 40px;
+  color: #555;
+  text-decoration: none;
+  border: 3px solid #555;
+  border-radius: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+#thirdPage>a:active {
+  font-size: 40px;
+  color: #fff;
+  text-decoration: none;
+  border: 3px solid #000;
+  border-radius: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
