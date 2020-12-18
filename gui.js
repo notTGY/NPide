@@ -86,7 +86,7 @@ function connectToDb() {
     div.style.position = 'fixed';
     div.style.left = '0px';
     div.style.top = '0px';
-    div.style.zIndex = 342523525;
+    div.style.zIndex = 3200;
 
 
     div.innerHTML = '<h1>HELP PAGE</h1>';
@@ -146,7 +146,7 @@ function connectToDb() {
     div.style.flexDirection = 'column';
     div.style.left = '0px';
     div.style.top = '0px';
-    div.style.zIndex = 342523525;
+    div.style.zIndex = 3200;
 
     isLanguageMenu = 1;
 

@@ -144,4 +144,62 @@ if (areWeInNativeApp) {
       }
     }
   });
+} else {
+  nativeMenu = document.createElement('div');
+  nativeMenu.classList.add('nativeMenu');
+  document.body.appendChild(nativeMenu);
+  let but1 = document.createElement('button');
+  but1.innerHTML = 'Language ( Ctrl + Alt + L )';
+  but1.onclick = _=> {
+    if (!isLanguageMenu) {
+      startLanguageMenu();
+    } else {
+      let div = document.getElementById('language_div_id');
+      div.remove();
+      isLanguageMenu = 0;
+      tarea.focus();
+    }
+  };
+  nativeMenu.appendChild(but1);
+
+  let but4 = document.createElement('button');
+  but4.innerHTML = 'Autocompletion';
+  but4.onclick = _=> {
+    if(areWeAutocompleting) {
+      areWeAutocompleting = 0;
+    } else {
+      areWeAutocompleting = 1;
+    }
+    window.localStorage.setItem('autocompletion', areWeAutocompleting)
+  };
+  nativeMenu.appendChild(but4);
+
+
+  let but3 = document.createElement('button');
+  but3.innerHTML = 'ICPC';
+  but3.onclick = _=> {
+    if(!icpcMusicElem.paused) {
+      icpcMusicElem.pause();
+    } else {
+      icpcMusicElem.play();
+    }
+  };
+  nativeMenu.appendChild(but3);
+
+
+  let but2 = document.createElement('button');
+  but2.innerHTML = 'Help ( Ctrl + Alt + H )';
+  but2.onclick = _=> {
+    if (!isHelpMenu) {
+      startHelpMenu();
+    } else {
+      let but = document.getElementById('help_but_id');
+      let div = document.getElementById('help_div_id');
+      but.remove();
+      div.remove();
+      isHelpMenu = 0;
+      tarea.focus();
+    }
+  };
+  nativeMenu.appendChild(but2);
 }
